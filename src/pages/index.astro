@@ -76,12 +76,49 @@ const faqs = [
       shotId="reading-detail"
       flip
     />
-    <FeatureBlock
-      eyebrow="Extensibility"
-      title="Addons, sandboxed"
-      body="Teach the app about a new source with a manifest and a script. Each addon runs in an isolated interpreter with an execution timeout, off the interface thread, so nothing an addon does can freeze the app. EverythingBox ships the engine, not the sources."
-      shotId="movie-detail"
-    />
+    <section class="grid items-center gap-10 border-t border-edge/60 py-16 md:grid-cols-2">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-widest text-accent">Extensibility</p>
+        <h2 class="mt-3 text-3xl font-bold">The eight are just the ones it ships with</h2>
+        <p class="mt-4 leading-relaxed text-muted">
+          An addon can declare <em>any</em> catalog you like. Podcasts, live sports, magazines,
+          lectures, concert recordings, your own archive — if you can write thirty lines of
+          JavaScript that returns a list of things, it becomes a shelf in the library and behaves
+          exactly like the ones built in: browsable, searchable, with artwork and drill-down.
+        </p>
+
+        <div class="mt-6 flex flex-wrap gap-2">
+          {
+            ['Podcasts', 'Live sports', 'Magazines', 'Lectures', 'Concerts', 'Anything else'].map(
+              (c, i) => (
+                <span
+                  class={`rounded-full border px-3 py-1 text-sm ${
+                    i === 5
+                      ? 'border-accent/50 text-accent'
+                      : 'border-edge bg-surface text-muted'
+                  }`}
+                >
+                  {c}
+                </span>
+              ),
+            )
+          }
+        </div>
+
+        <p class="mt-6 text-sm leading-relaxed text-muted">
+          Each addon runs in an isolated interpreter with an execution timeout, off the interface
+          thread, so nothing an addon does can freeze the app. EverythingBox ships the engine, not
+          the sources.
+        </p>
+
+        <a href="/addons" class="mt-6 inline-block text-sm text-accent underline">
+          See how an addon is written
+        </a>
+      </div>
+      <div>
+        <Shot id="movie-detail" caption="" />
+      </div>
+    </section>
 
     <section class="border-t border-edge/60 py-16">
       <p class="text-sm font-semibold uppercase tracking-widest text-accent">Themes</p>

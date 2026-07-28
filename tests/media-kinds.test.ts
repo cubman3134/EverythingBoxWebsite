@@ -52,6 +52,15 @@ describe('the site actually says so', () => {
     expect(home).not.toMatch(/>6<\/p>\s*<p[^>]*>\s*kinds of media/);
   });
 
+
+  it('says plainly that addons can add catalogs beyond the eight', () => {
+    const home = readFileSync('dist/index.html', 'utf8').toLowerCase();
+    // The point the home page has to land: the shipped set is not the ceiling.
+    expect(home).toContain('podcasts');
+    expect(home).toContain('magazines');
+    expect(home).toMatch(/any.{0,12}catalog/);
+  });
+
   it('does not claim live TV or sports, which no bundled catalog provides', () => {
     // The app has home tiles for these, but they are filled by addons the user installs —
     // nothing ships that provides them, so the site must not advertise them.
