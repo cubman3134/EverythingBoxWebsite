@@ -1,10 +1,10 @@
 ---
-import { Image } from 'astro:assets';
+
 import Glow from './Glow.astro';
-import { shotById } from '../lib/shots';
+
 import { resolveRelease, formatSize } from '../lib/release';
 
-const shot = shotById('video-library');
+
 const release = await resolveRelease();
 // Serialised for the platform-detection island. Build-time data — no runtime fetch.
 const assets = release.assets.map((a) => ({
@@ -41,16 +41,46 @@ const assets = release.assets.map((a) => ({
   <p class="mt-4 text-xs text-muted">Free and open source · {release.version}</p>
 
   <div class="relative mx-auto mt-14 max-w-5xl px-5">
-    <Image
-      src={shot.src}
-      alt="EverythingBox browsing a film library on a television"
-      widths={[800, 1400, 2000]}
-      sizes="(max-width: 1024px) 100vw, 1024px"
-      loading="eager"
+    <img
+      id="heroLoop"
+      src="/hero-loop.webp"
+      alt="EverythingBox browsing a film library, the selection moving across the posters"
+      width="1100"
+      height="688"
       class="w-full rounded-t-xl border border-b-0 border-edge"
     />
+    <button
+      id="heroToggle"
+      class="absolute bottom-4 right-8 rounded-md border border-edge bg-base/80 px-3 py-1 text-xs text-muted hover:text-ink"
+    >
+      Pause
+    </button>
   </div>
 </section>
+
+<script>
+  // Island 5 of 5: hero playback control. An animated WebP cannot be paused directly,
+  // so pausing swaps in the first frame, held as a still.
+  const loop = document.getElementById('heroLoop') as HTMLImageElement | null;
+  const toggle = document.getElementById('heroToggle');
+  const moving = '/hero-loop.webp';
+  const still = '/hero-still.webp';
+  let playing = true;
+
+  // Honour a reduced-motion preference without being asked.
+  if (loop && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    loop.src = still;
+    playing = false;
+    if (toggle) toggle.textContent = 'Play';
+  }
+
+  toggle?.addEventListener('click', () => {
+    if (!loop) return;
+    playing = !playing;
+    loop.src = playing ? moving : still;
+    toggle.textContent = playing ? 'Pause' : 'Play';
+  });
+</script>
 
 <script define:vars={{ assets }}>
   // Island 4 of 5: platform detection. This only UPGRADES the CTA — with JavaScript

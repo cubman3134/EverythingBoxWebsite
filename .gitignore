@@ -17,3 +17,5 @@ node_modules/
 Thumbs.db
 .vscode/
 .idea/
+# hero loop source frames — the encoded output in public/ is what ships
+src/assets/hero-frames/
