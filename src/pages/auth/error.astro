@@ -1,0 +1,92 @@
+---
+// Where the app's OAuth loopback server sends the browser when sign-in did NOT complete.
+// Before this existed the app rendered the same "Signed in" page on failure, so a denied
+// or mismatched sign-in told the user it had worked.
+//
+// The app appends ?reason=<code>. Nothing secret goes in that parameter — it is one of
+// Google's error codes or one of ours, never the authorization code.
+import Base from '../../layouts/Base.astro';
+import Glow from '../../components/Glow.astro';
+
+const reasons = [
+  {
+    key: 'access_denied',
+    title: 'You declined the permission request',
+    body: 'Cloud sync needs access to its own folder in your Drive to store progress and saves. Nothing was connected.',
+  },
+  {
+    key: 'cancelled',
+    title: 'Sign-in was cancelled',
+    body: 'The browser closed or went back before Google finished. Nothing was connected.',
+  },
+  {
+    key: 'state_mismatch',
+    title: "The sign-in didn't match the request",
+    body: 'EverythingBox rejected the response because it did not match the sign-in it started. This is the safety check working. Try again from the app, and only use the tab it opens.',
+  },
+];
+---
+
+<Base
+  title="Sign-in didn't complete — EverythingBox"
+  description="Google sign-in did not complete. Nothing was connected."
+  noindex
+>
+  <section class="relative flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
+    <Glow className="top-0" />
+
+    <div class="flex h-16 w-16 items-center justify-center rounded-full border border-edge bg-surface">
+      <svg
+        width="30"
+        height="30"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#a9b3c9"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 8v5"></path>
+        <path d="M12 17h.01"></path>
+        <circle cx="12" cy="12" r="9"></circle>
+      </svg>
+    </div>
+
+    <h1 id="errTitle" class="display mt-7 text-4xl sm:text-5xl">Sign-in didn't complete</h1>
+    <p id="errBody" class="mt-4 max-w-lg text-lg text-muted">
+      Nothing was connected, and cloud sync is still off. You can close this tab and try again
+      from EverythingBox.
+    </p>
+
+    <div class="mt-10 max-w-md rounded-lg border border-edge bg-surface px-5 py-4 text-left text-sm text-muted">
+      <p class="font-semibold text-ink">If it keeps happening</p>
+      <ul class="mt-2 list-disc space-y-1 pl-5 leading-relaxed">
+        <li>Start the sign-in from the app, and use the tab it opens rather than a copied link.</li>
+        <li>Make sure the app is still running — it is waiting on a local port for the reply.</li>
+        <li>
+          Still stuck? <a
+            class="text-accent underline"
+            href="https://github.com/cubman3134/EverythingBox/issues">Open an issue</a
+          > and say which step failed.
+        </li>
+      </ul>
+    </div>
+
+    <a href="/docs/troubleshooting" class="mt-8 text-sm text-accent underline">Troubleshooting</a>
+  </section>
+</Base>
+
+<script define:vars={{ reasons }}>
+  // Sharpen the message when the app tells us what went wrong. The page is already
+  // correct and useful without this — the generic copy above stands on its own, so a
+  // missing or unknown reason is not a broken state.
+  const reason = new URLSearchParams(location.search).get('reason');
+  const match = reasons.find((r) => r.key === reason);
+  if (match) {
+    const title = document.getElementById('errTitle');
+    const body = document.getElementById('errBody');
+    if (title) title.textContent = match.title;
+    if (body) body.textContent = match.body;
+  }
+</script>

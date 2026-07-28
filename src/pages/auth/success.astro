@@ -1,0 +1,54 @@
+---
+// Where the app's OAuth loopback server sends the browser after a successful Google
+// sign-in. The app itself has already received the authorization code by the time this
+// renders — this page is confirmation for the human, nothing more. It must never be the
+// thing that carries the code.
+import Base from '../../layouts/Base.astro';
+import Glow from '../../components/Glow.astro';
+---
+
+<Base
+  title="Signed in — EverythingBox"
+  description="Your Google account is connected. Cloud sync is on."
+  noindex
+>
+  <section class="relative flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
+    <Glow className="top-0" />
+
+    <div
+      class="flex h-16 w-16 items-center justify-center rounded-full border border-accent/40 bg-accent/10"
+    >
+      <svg
+        width="30"
+        height="30"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#e8b13a"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M20 6 9 17l-5-5"></path>
+      </svg>
+    </div>
+
+    <h1 class="display mt-7 text-4xl sm:text-5xl">You're signed in</h1>
+    <p class="mt-4 max-w-md text-lg text-muted">
+      EverythingBox is connected to your Google account. Cloud sync is on.
+    </p>
+    <p class="mt-6 text-sm text-muted">You can close this tab and go back to the app.</p>
+
+    <div class="mt-10 rounded-lg border border-edge bg-surface px-5 py-4 text-left text-sm text-muted">
+      <p class="font-semibold text-ink">What syncs</p>
+      <p class="mt-1 max-w-md leading-relaxed">
+        Your progress, save files and settings, between your own machines. Your media stays
+        where it is — nothing is uploaded to us, and this site never sees your account.
+      </p>
+    </div>
+
+    <a href="/docs/getting-started" class="mt-8 text-sm text-accent underline">
+      Read the getting-started guide
+    </a>
+  </section>
+</Base>

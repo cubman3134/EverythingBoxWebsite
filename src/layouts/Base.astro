@@ -6,8 +6,10 @@ interface Props {
   description: string;
   /** Full-bleed pages (the home page) manage their own horizontal padding. */
   wide?: boolean;
+  /** Landing pages that are reached from the app, not from search. */
+  noindex?: boolean;
 }
-const { title, description, wide = false } = Astro.props;
+const { title, description, wide = false, noindex = false } = Astro.props;
 
 // Absolute URLs, required by canonical and by every social crawler — a relative
 // og:image is simply ignored. Astro.site comes from astro.config.mjs, so these follow
@@ -33,6 +35,7 @@ const path = Astro.url.pathname;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

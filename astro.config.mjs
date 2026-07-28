@@ -9,9 +9,13 @@ import tailwindcss from '@tailwindcss/vite';
 // No host adapter is configured on purpose — the static output deploys anywhere.
 export default defineConfig({
   site: process.env.SITE_URL ?? 'https://everything-box.com',
-  // sitemap reads `site` above, so it follows the deploy target automatically. The 404
-  // page is excluded — it is a fallback, not a destination a crawler should index.
-  integrations: [mdx(), sitemap({ filter: (page) => !page.includes('/404') })],
+  // sitemap reads `site` above, so it follows the deploy target automatically. Excluded:
+  // /404 (a fallback, not a destination) and /auth/* (reached from the app's sign-in
+  // flow, meaningless to arrive at cold from a search result).
+  integrations: [
+    mdx(),
+    sitemap({ filter: (page) => !page.includes('/404') && !page.includes('/auth/') }),
+  ],
   output: 'static',
   vite: { plugins: [tailwindcss()] },
 });
