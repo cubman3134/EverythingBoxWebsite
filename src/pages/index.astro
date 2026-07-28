@@ -5,6 +5,7 @@ import FeatureBlock from '../components/FeatureBlock.astro';
 import Shot from '../components/Shot.astro';
 import { themes, themeRegistryUrl } from '../data/themes';
 import { systems } from '../data/systems';
+import { mediaKinds } from '../data/mediaKinds';
 
 const faqs = [
   {
@@ -28,7 +29,7 @@ const faqs = [
 
 <Base
   title="EverythingBox — one app for everything you watch, play and read"
-  description="A native media hub for films, shows, music, games, comics and books. Windows, macOS, Linux, Android TV and iOS. Free and open source."
+  description="A native media hub for films, shows, games, music, audiobooks, books, comics and manga. Windows, macOS, Linux, Android TV and iOS. Free and open source."
   wide
 >
   <Hero />
@@ -36,7 +37,7 @@ const faqs = [
   <div class="mx-auto w-full max-w-6xl px-5">
     <section class="grid gap-6 border-t border-edge/60 py-12 text-center sm:grid-cols-3">
       <div>
-        <p class="display text-4xl text-accent">6</p>
+        <p class="display text-4xl text-accent">{mediaKinds.length}</p>
         <p class="mt-1 text-sm text-muted">kinds of media, one library</p>
       </div>
       <div>
@@ -63,15 +64,15 @@ const faqs = [
       flip
     />
     <FeatureBlock
-      eyebrow="Music"
+      eyebrow="Music & audiobooks"
       title="A folder is a playlist"
-      body="MP3, FLAC, OGG and the rest, with folder queueing, automatic advance, and cover art matched in for you."
+      body="MP3, FLAC, OGG and the rest, with folder queueing, automatic advance, and cover art matched in for you. Audiobooks and podcasts sit in the same library and pick up where you stopped."
       shotId="music-library"
     />
     <FeatureBlock
       eyebrow="Reading"
-      title="Books, comics and PDFs"
-      body="An EPUB reader that parses the spine and contents, a comic reader for CBZ and CBR, and PDFs rendered by PDFium. Every one of them remembers your place."
+      title="Books, comics, manga and PDFs"
+      body="An EPUB reader that parses the spine and contents, a reader for CBZ and CBR comics and manga, and PDFs rendered by PDFium. Every one of them remembers your place."
       shotId="reading-detail"
       flip
     />

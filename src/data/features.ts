@@ -12,8 +12,8 @@ export const features: Feature[] = [
   },
   {
     group: 'Playback',
-    title: 'Music with real playlists',
-    body: 'MP3, FLAC, OGG, WAV and more, with folder queueing, previous and next, and automatic advance at the end of a track.',
+    title: 'Music, audiobooks and podcasts',
+    body: 'MP3, FLAC, OGG, WAV and more, with folder queueing, previous and next, and automatic advance at the end of a track. Audiobooks and podcasts are first-class alongside music, and resume where you stopped.',
   },
   {
     group: 'Playback',
@@ -39,8 +39,8 @@ export const features: Feature[] = [
   },
   {
     group: 'Library',
-    title: 'Artwork and metadata',
-    body: 'Posters, logos, banners, backdrops and descriptions arrive through catalog addons, so a shelf of filenames becomes something you can browse by cover.',
+    title: 'Eight kinds of media, one library',
+    body: 'Films, shows, games, music, audiobooks, books, comics and manga each get their own catalog, with posters, logos, banners, backdrops and descriptions — so a shelf of filenames becomes something you can browse by cover.',
   },
   {
     group: 'Library',
@@ -109,7 +109,7 @@ export const features: Feature[] = [
   {
     group: 'Reading',
     title: 'Comics and manga',
-    body: 'CBZ and CBR, page by page, in the same library as everything else.',
+    body: 'CBZ and CBR, page by page, each with its own catalog in the library alongside books and audiobooks.',
   },
 
   // ---- Extensibility ----

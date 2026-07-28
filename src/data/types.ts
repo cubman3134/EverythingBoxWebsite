@@ -13,6 +13,14 @@ export interface Emulator {
   homepage: string;
 }
 
+/** A kind of media the bundled catalog addon ships a catalog for. */
+export interface MediaKind {
+  /** The catalog type token, e.g. "audiobook". */
+  type: string;
+  /** The name shown in the app, e.g. "Audiobooks". */
+  name: string;
+}
+
 export interface Platform {
   id: string;
   name: string;
