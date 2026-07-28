@@ -1,0 +1,38 @@
+---
+import { systems } from '../data/systems';
+import { emulators } from '../data/emulators';
+
+const emuName = new Map(emulators.map((e) => [e.id, e.name]));
+---
+
+<div class="overflow-x-auto rounded-lg border border-edge">
+  <table class="w-full min-w-[560px] text-left text-sm">
+    <thead class="bg-surface text-xs uppercase tracking-wider text-muted">
+      <tr>
+        <th class="px-4 py-3">System</th>
+        <th class="px-4 py-3">Runs on</th>
+        <th class="px-4 py-3">File types</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        systems.map((s) => (
+          <tr class="border-t border-edge/60">
+            <td class="px-4 py-2.5 font-medium">{s.name}</td>
+            <td class="px-4 py-2.5 text-muted">
+              {s.externalEmulator
+                ? (emuName.get(s.externalEmulator) ?? s.externalEmulator)
+                : 'Built-in core'}
+            </td>
+            <td class="px-4 py-2.5 font-mono text-xs text-muted">
+              {s.extensions
+                .slice(0, 6)
+                .map((e) => `.${e}`)
+                .join(' ')}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

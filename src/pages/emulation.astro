@@ -1,0 +1,81 @@
+---
+import Base from '../layouts/Base.astro';
+import Glow from '../components/Glow.astro';
+import Shot from '../components/Shot.astro';
+import SystemsTable from '../components/SystemsTable.astro';
+import { systems } from '../data/systems';
+import { emulators } from '../data/emulators';
+
+const externalCount = systems.filter((s) => s.externalEmulator).length;
+const coreCount = systems.length - externalCount;
+---
+
+<Base
+  title="Emulation — EverythingBox"
+  description="63 systems, from the Atari 2600 to the Xbox 360, in the same app as everything else."
+>
+  <section class="relative pt-20 pb-10">
+    <Glow className="top-0" />
+    <h1 class="display text-5xl">Emulation</h1>
+    <p class="mt-4 max-w-2xl text-muted">
+      {systems.length} systems. {coreCount} of them run on cores loaded straight into the application;
+      the remaining {externalCount} hand off to a standalone emulator the app installs and configures
+      for you.
+    </p>
+  </section>
+
+  <Shot id="emu-systems" priority caption="" />
+
+  <section class="grid gap-10 border-t border-edge/60 py-12 md:grid-cols-2">
+    <div>
+      <h2 class="text-xl font-bold">Cores run inside the app</h2>
+      <p class="mt-3 text-sm leading-relaxed text-muted">
+        libretro cores load directly into the process, so there is no second window and no separate
+        configuration to keep in step. Hardware-rendered cores get a real OpenGL context. Cores
+        download on demand — you pick the system, the app fetches what it needs.
+      </p>
+    </div>
+    <div>
+      <h2 class="text-xl font-bold">Modern consoles use the real thing</h2>
+      <p class="mt-3 text-sm leading-relaxed text-muted">
+        For newer hardware the app fetches the established standalone emulator from its own official
+        source, unpacks it, and launches it with the right arguments: {
+          emulators.map((e) => e.name).join(', ')
+        }. These are desktop-only — Android and iOS cannot launch downloaded desktop executables.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-t border-edge/60 py-12">
+    <h2 class="text-2xl font-bold">Every game, with its artwork</h2>
+    <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+      Box art, logos, screen art and descriptions are matched to your ROMs automatically, along with
+      when you last played something and for how long.
+    </p>
+    <div class="mt-6 grid gap-8 md:grid-cols-2">
+      <Shot id="games-library" caption="" />
+      <Shot id="game-detail" caption="" />
+    </div>
+  </section>
+
+  <section class="grid gap-8 border-t border-edge/60 py-12 md:grid-cols-2">
+    <div>
+      <h2 class="text-2xl font-bold">Controllers</h2>
+      <p class="mt-3 text-sm leading-relaxed text-muted">
+        Gamepads are handled through SDL2 with hot-plug, so a pad connected mid-session just works.
+        Four player ports, each with its own controller <em>and</em> keyboard mapping, plus rumble and
+        adjustable turbo per button. Save and load states from the transport bar, and sync those
+        saves between machines.
+      </p>
+    </div>
+    <Shot id="remap" caption="" />
+  </section>
+
+  <section class="border-t border-edge/60 py-12">
+    <h2 class="text-2xl font-bold">Every system</h2>
+    <p class="mt-3 mb-6 max-w-2xl text-sm text-muted">
+      EverythingBox ships no games and no BIOS files. It runs what you already own.
+    </p>
+    <SystemsTable />
+  </section>
+</Base>

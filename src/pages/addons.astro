@@ -1,0 +1,130 @@
+---
+import Base from '../layouts/Base.astro';
+import Glow from '../components/Glow.astro';
+import Shot from '../components/Shot.astro';
+
+const manifest = `{
+  "id": "com.example.myaddon",
+  "name": "My Addon",
+  "version": "1.0.0",
+  "catalogs": [
+    { "id": "popular", "type": "movie", "name": "Popular" }
+  ],
+  "settings": [
+    { "key": "apiKey", "type": "password", "label": "API key" }
+  ]
+}`;
+
+const script = `// main.js
+function getCatalog(catalogId, args) {
+  var res = httpGet("https://example.com/api/" + catalogId +
+                    "?page=" + args.page + "&key=" + getConfig("apiKey"));
+  var data = JSON.parse(res);
+  return {
+    items: data.results.map(function (r) {
+      return { id: String(r.id), title: r.title, poster: r.image };
+    }),
+    hasMore: data.page < data.total_pages
+  };
+}
+
+// Optional: a series expands to its episodes, an album to its tracks.
+function getDetail(id) {
+  var res = httpGet("https://example.com/api/item/" + id);
+  return JSON.parse(res);
+}`;
+---
+
+<Base
+  title="Addons — EverythingBox"
+  description="Extend EverythingBox with sandboxed JavaScript addons. It ships the engine, not the sources."
+>
+  <section class="relative pt-20 pb-10">
+    <Glow className="top-0" />
+    <h1 class="display text-5xl">Addons</h1>
+    <p class="mt-4 max-w-2xl text-muted">
+      An addon teaches EverythingBox about a new source of things to browse. It is a manifest and a
+      script, and it runs sandboxed.
+    </p>
+  </section>
+
+  <section class="rounded-lg border border-edge bg-surface p-6">
+    <h2 class="text-lg font-bold">EverythingBox ships the engine, not the sources</h2>
+    <p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
+      The application provides the addon runtime, the catalog model, and a metadata addon that fills
+      in artwork and descriptions. It ships no media, and it does not come configured to point
+      anywhere in particular. What you connect it to is your decision and your responsibility.
+    </p>
+  </section>
+
+  <section class="grid gap-10 border-t border-edge/60 py-12 md:grid-cols-3">
+    <div>
+      <h3 class="font-semibold">Sandboxed</h3>
+      <p class="mt-2 text-sm leading-relaxed text-muted">
+        Each addon runs in an isolated JavaScript interpreter with a per-call execution timeout, so
+        a runaway script cannot lock up the interface.
+      </p>
+    </div>
+    <div>
+      <h3 class="font-semibold">Never blocks the app</h3>
+      <p class="mt-2 text-sm leading-relaxed text-muted">
+        Calls run off the interface thread, each in a fresh context. No addon can freeze the app
+        while it waits on a slow network.
+      </p>
+    </div>
+    <div>
+      <h3 class="font-semibold">Configurable</h3>
+      <p class="mt-2 text-sm leading-relaxed text-muted">
+        An addon declares its own settings schema and the app renders a form for it. Values persist
+        per addon, and the script reads them back with <code class="text-accent">getConfig</code>.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-t border-edge/60 py-12">
+    <h2 class="text-2xl font-bold">What they produce</h2>
+    <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+      EverythingBox ships with a catalog addon covering films, shows, games and music. Add your own
+      API keys in its configuration screen and a folder of filenames turns into this — posters,
+      backdrops, ratings, genres and descriptions, with series expanding to their episodes.
+    </p>
+    <div class="mt-6 grid gap-8 md:grid-cols-2">
+      <Shot id="movie-detail" caption="" />
+      <Shot id="show-episodes" caption="" />
+    </div>
+  </section>
+
+  <section class="border-t border-edge/60 py-12">
+    <h2 class="text-2xl font-bold">Installing one</h2>
+    <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+      Addons are distributed as <code class="text-accent">.addon</code> files. Open the library, choose
+      to install, and pick the file. Each source can be enabled or disabled individually, and the setting
+      sticks.
+    </p>
+  </section>
+
+  <section class="border-t border-edge/60 py-12">
+    <h2 class="text-2xl font-bold">Writing one</h2>
+    <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+      Two files. A manifest describing what you provide and what you need configured:
+    </p>
+    <pre
+      class="mt-4 overflow-x-auto rounded-lg border border-edge bg-surface p-4 text-sm"><code>{manifest}</code></pre>
+    <p class="mt-6 max-w-2xl text-sm leading-relaxed text-muted">
+      And a script that answers for it. The host gives you HTTP, storage, logging and your own
+      configuration values:
+    </p>
+    <pre
+      class="mt-4 overflow-x-auto rounded-lg border border-edge bg-surface p-4 text-sm"><code>{script}</code></pre>
+    <p class="mt-6 max-w-2xl text-sm text-muted">
+      Catalogs support search and pagination as well as drill-down. The full contract is documented
+      in the
+      <a
+        class="text-accent"
+        href="https://github.com/cubman3134/EverythingBox/blob/main/native/README.md"
+      >
+        app repository</a
+      >.
+    </p>
+  </section>
+</Base>
