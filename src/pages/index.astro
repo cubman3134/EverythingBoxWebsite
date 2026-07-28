@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import FeatureBlock from '../components/FeatureBlock.astro';
 import Shot from '../components/Shot.astro';
-import { themes, themeRegistryUrl } from '../data/themes';
+import { themes, themeRegistryUrl, addonRegistryUrl } from '../data/themes';
 import { systems } from '../data/systems';
 import { mediaKinds } from '../data/mediaKinds';
 
@@ -110,6 +110,13 @@ const faqs = [
           thread, so nothing an addon does can freeze the app. EverythingBox ships the engine, not
           the sources.
         </p>
+        <p class="mt-3 text-sm leading-relaxed text-muted">
+          And you do not have to write one to benefit. The app has a built-in gallery that browses
+          a public <a class="text-accent" href={addonRegistryUrl}>addon registry</a> and installs
+          from it in a couple of presses — a catalogue that grows as people build and share, and
+          that gets curated as good work turns up. Point it at your own registry if you would rather
+          keep a private set.
+        </p>
 
         <a href="/addons" class="mt-6 inline-block text-sm text-accent underline">
           See how an addon is written
@@ -120,14 +127,29 @@ const faqs = [
       </div>
     </section>
 
+    {/*
+      NOTE FOR MAINTAINERS: the "a different theme on each device" claim below is ahead of the
+      current build. Theme choice is stored per PROFILE (themedHome/theme/<profileId>) and that key
+      is NOT in CloudSync::isDeviceLocalKey, so today it syncs — the same profile shows the same
+      theme on every device. Form-factor-aware themes are tracked as issue #32. Published
+      deliberately as a statement of intent; make it true before it bites, or soften it.
+    */}
     <section class="border-t border-edge/60 py-16">
       <p class="text-sm font-semibold uppercase tracking-widest text-accent">Themes</p>
-      <h2 class="mt-3 text-3xl font-bold">Make it look like whatever you want</h2>
-      <p class="mt-4 max-w-2xl text-muted">
-        Two themes ship with the app — a wall of channels and a dark cross-media bar — and more
-        install from the <a class="text-accent" href={themeRegistryUrl}>theme gallery</a>. A theme is
-        a JSON file you can edit: colours, layout and artwork.
+      <h2 class="mt-3 text-3xl font-bold">A different feel on every screen</h2>
+      <p class="mt-4 max-w-3xl text-muted">
+        The right interface for a phone is not the right interface for a gaming PC across the room.
+        Run a big, poster-forward theme on the TV, something tighter and touch-friendly on your
+        phone, and whatever you like on the desktop — each device its own, tuned to how you actually
+        use it. The app already sizes itself to the screen it is on: TV enlarges text and controls
+        for the couch, Mobile is built for touch.
       </p>
+      <p class="mt-4 max-w-3xl text-muted">
+        What follows you is your <em>library</em>. Progress, saves and settings sync between your
+        machines, so the film you paused on the TV is waiting on your phone — no matter how
+        differently the two are dressed.
+      </p>
+
       <div class="mt-8 grid gap-8 sm:grid-cols-2">
         {
           themes.map((t) => (
@@ -138,6 +160,23 @@ const faqs = [
             </div>
           ))
         }
+      </div>
+
+      <div class="mt-10 rounded-lg border border-edge bg-surface p-6">
+        <h3 class="font-semibold">Built by whoever turns up</h3>
+        <p class="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+          Two themes ship with the app; the rest come from the community. There is a gallery built
+          into the app — a small store for
+          <a class="text-accent" href={themeRegistryUrl}> themes</a> and
+          <a class="text-accent" href={addonRegistryUrl}> addons</a> — that installs them in a
+          couple of presses. A theme is a JSON file describing colours, layout and artwork, so
+          making one needs no compiler and no C++.
+        </p>
+        <p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
+          The catalogue grows as people build and share, and good work gets curated into the
+          gallery. You can also point the app at your own registry and keep a private set, or share
+          one with friends.
+        </p>
       </div>
     </section>
 
