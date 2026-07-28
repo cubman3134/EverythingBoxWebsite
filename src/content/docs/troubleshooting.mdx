@@ -1,0 +1,44 @@
+---
+title: Troubleshooting
+description: What to check when something is not working.
+order: 6
+---
+
+## macOS refuses to open it
+
+The build is unsigned. Right-click the application and choose **Open**, then confirm. A
+double-click will keep being refused until you have done this once.
+
+## A game will not start
+
+Three usual causes, in order of likelihood:
+
+- **The file is not on this machine.** A library entry showing **Download** rather than **Play** is
+  a catalog entry whose ROM you do not have yet. Nothing will boot until the file is on disk.
+- **The core is missing.** Cores download on demand, so the machine needs network access the first
+  time you open a given system.
+- **The dump is wrong.** Some systems are strict about the file being a correct dump. A file that
+  plays elsewhere but not here is usually a format the core does not accept rather than a fault in
+  the app.
+
+Systems needing BIOS files will not run without them. EverythingBox does not supply them; there is
+a **BIOS Check** screen in settings that tells you which ones are missing.
+
+## No artwork, just filenames
+
+The catalog addon needs your own API keys. See [Artwork and metadata](/docs/metadata).
+
+## A video plays with no sound, or the wrong track
+
+Files with multiple audio tracks default to the first. Switch tracks from the playback controls.
+
+## Subtitles are out of sync
+
+Each file has its own subtitle offset. Adjust it during playback and the setting is remembered for
+that file.
+
+## Reporting a problem
+
+Open an issue on the
+[GitHub repository](https://github.com/cubman3134/EverythingBox/issues), and say which platform and
+which version you are on — the version is shown on the [download page](/download) and in settings.

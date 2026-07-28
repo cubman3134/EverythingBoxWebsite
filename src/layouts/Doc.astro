@@ -1,0 +1,102 @@
+---
+import Base from './Base.astro';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+
+const all = (await getCollection('docs')).sort((a, b) => a.data.order - b.data.order);
+const path = Astro.url.pathname.replace(/\/$/, '');
+---
+
+<Base title={`${title} — EverythingBox docs`} description={description}>
+  <div class="grid gap-12 py-14 md:grid-cols-[200px_1fr]">
+    <nav class="text-sm">
+      <p class="mb-3 font-semibold uppercase tracking-widest text-accent">Docs</p>
+      <ul class="space-y-2">
+        {
+          all.map((d) => (
+            <li>
+              <a
+                href={`/docs/${d.id}`}
+                class={path === `/docs/${d.id}` ? 'text-accent' : 'text-muted hover:text-ink'}
+              >
+                {d.data.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <article class="max-w-2xl">
+      <h1 class="display text-4xl">{title}</h1>
+      <p class="mt-3 text-muted">{description}</p>
+      <div class="doc-prose mt-8"><slot /></div>
+    </article>
+  </div>
+</Base>
+
+<style is:global>
+  /* Long-form pages drop the glow, widen line-height, and use gold only for links. */
+  .doc-prose {
+    line-height: 1.75;
+  }
+  .doc-prose h2 {
+    margin-top: 2.25rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+  }
+  .doc-prose h3 {
+    margin-top: 1.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .doc-prose p,
+  .doc-prose ul,
+  .doc-prose ol {
+    margin-top: 1rem;
+    color: var(--color-muted);
+  }
+  .doc-prose ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .doc-prose ol {
+    list-style: decimal;
+    padding-left: 1.25rem;
+  }
+  .doc-prose li {
+    margin-top: 0.35rem;
+  }
+  .doc-prose a {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+  .doc-prose strong {
+    color: var(--color-ink);
+  }
+  .doc-prose code {
+    background: var(--color-surface);
+    border: 1px solid var(--color-edge);
+    border-radius: 4px;
+    padding: 0.1em 0.35em;
+    font-size: 0.9em;
+  }
+  .doc-prose pre {
+    margin-top: 1rem;
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--color-edge);
+    background: var(--color-surface);
+    padding: 1rem;
+  }
+  .doc-prose pre code {
+    border: 0;
+    background: none;
+    padding: 0;
+  }
+</style>

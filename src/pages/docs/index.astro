@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Glow from '../../components/Glow.astro';
+
+const docs = (await getCollection('docs')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base
+  title="Documentation — EverythingBox"
+  description="Getting started with EverythingBox, and what to do when something is not working."
+>
+  <section class="relative pt-20 pb-10">
+    <Glow className="top-0" />
+    <h1 class="display text-5xl">Documentation</h1>
+  </section>
+  <div class="grid gap-4 pb-20 md:grid-cols-2">
+    {
+      docs.map((d) => (
+        <a
+          href={`/docs/${d.id}`}
+          class="rounded-lg border border-edge bg-surface p-5 hover:border-accent"
+        >
+          <h2 class="font-semibold">{d.data.title}</h2>
+          <p class="mt-1 text-sm text-muted">{d.data.description}</p>
+        </a>
+      ))
+    }
+  </div>
+</Base>
