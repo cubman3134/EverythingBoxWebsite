@@ -7,11 +7,13 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node tools/build.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "gen": "node tools/gen-catalog.mjs",
-    "test": "astro build && vitest run"
+    "test": "vitest run",
+    "check": "npm run build && npm run test",
+    "build:raw": "astro build"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",

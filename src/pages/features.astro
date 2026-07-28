@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import Glow from '../components/Glow.astro';
+import { features } from '../data/features';
+
+const order = [
+  'Playback',
+  'Library',
+  'Emulation',
+  'Reading',
+  'Extensibility',
+  'Sync & social',
+  'Platforms',
+];
+const grouped = order.map((g) => ({ group: g, items: features.filter((f) => f.group === g) }));
+---
+
+<Base title="Features — EverythingBox" description="Everything EverythingBox does, grouped and in full.">
+  <section class="relative pt-20 pb-10">
+    <Glow className="top-0" />
+    <h1 class="display text-5xl">Features</h1>
+    <p class="mt-4 max-w-2xl text-muted">
+      The full inventory. Where something is built but not yet proven on real hardware, it says so.
+    </p>
+  </section>
+
+  {
+    grouped.map(({ group, items }) => (
+      <section class="border-t border-edge/60 py-12">
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-accent">{group}</h2>
+        <div class="mt-6 grid gap-x-10 gap-y-8 md:grid-cols-2">
+          {items.map((f) => (
+            <div>
+              <h3 class="font-semibold">
+                {f.title}
+                {f.unverified && (
+                  <span class="ml-2 rounded border border-edge px-1.5 py-0.5 align-middle text-[11px] font-normal text-muted">
+                    untested on hardware
+                  </span>
+                )}
+              </h3>
+              <p class="mt-1 text-sm leading-relaxed text-muted">{f.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+</Base>

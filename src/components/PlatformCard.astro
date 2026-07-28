@@ -1,0 +1,38 @@
+---
+interface Props {
+  name: string;
+  note: string;
+  url: string | null;
+  filename: string | null;
+  size: string | null;
+}
+const { name, note, url, filename, size } = Astro.props;
+---
+
+<div class="flex flex-col rounded-lg border border-edge bg-surface p-5">
+  <h3 class="font-semibold">{name}</h3>
+  <p class="mt-1 flex-1 text-sm leading-relaxed text-muted">{note}</p>
+  {
+    url ? (
+      <>
+        <a
+          href={url}
+          class="mt-4 inline-block rounded-md bg-accent px-4 py-2 text-center font-semibold text-base"
+        >
+          Download
+        </a>
+        <p class="mt-2 break-all text-xs text-muted">
+          {filename} · {size}
+        </p>
+      </>
+    ) : (
+      <p class="mt-4 text-sm text-muted">
+        No build in the current release —{' '}
+        <a class="text-accent" href="https://github.com/cubman3134/EverythingBox/releases">
+          see all releases
+        </a>
+        .
+      </p>
+    )
+  }
+</div>
