@@ -31,7 +31,7 @@ Content is derived from the app repo at `C:\Users\cubma\Project Goliath`, not in
 |---|---|
 | Feature list | `README.md`, `native/README.md` |
 | Platform matrix + install caveats | `README.md` download table |
-| Systems list (~70) | `native/src/core/SystemCatalog.h` |
+| Systems list (63, 16 externally backed) | `native/src/core/SystemCatalog.h` |
 | Standalone emulators (15) | `native/src/core/EmulatorRegistry.h` |
 | Themes (6) | `native/registry/everythingbox-themes/themes2/` |
 | Addon contract | `native/README.md`, `native/addons/aiocatalog/` |
@@ -98,17 +98,31 @@ using it on a TV/with a remote · troubleshooting · FAQ.
   (`title`, `description`, `order`). Drives `/docs` and its sidebar.
 - `src/data/*.ts` — typed modules, each a single exported array, for `features`, `platforms`,
   `systems`, `emulators`, `themes`, and `screenshots`. Pages render from these. The systems list
-  alone is ~70 entries; embedding that in markup guarantees it goes stale.
+  alone is 63 entries; embedding that in markup guarantees it goes stale. `systems.ts` and
+  `emulators.ts` are **generated** from the app repo's C++ headers by `tools/gen-catalog.mjs`; the
+  generated output is committed, so the site build never needs the app repo present.
 
-**Download links.** Hybrid, chosen over two alternatives:
+**Download links.** Resolved at build time, with a committed fallback.
 
-- *Chosen:* hrefs point at GitHub's `/releases/latest/download/<asset>` permalinks — never stale,
-  no JS, no API dependency at request time. A **build-time** call to the Releases API fills in the
-  version string, publish date, and asset sizes, and its result is cached to
-  `src/data/release.fallback.json`, which is committed. If the API is unreachable at build time the
-  fallback is used, so the build never fails offline.
-- *Rejected:* hardcoding version numbers (goes stale on every release); client-side fetch
-  (needs JS, flashes empty state, fails without network).
+A **build-time** call to the GitHub Releases API returns the latest release's assets. Each asset is
+matched to a platform by its **filename suffix** (`-windows-x64.zip`, `-macos-arm64.dmg`, …), and the
+resolved `browser_download_url`, size, and version are baked into the page. The result is cached to
+`src/data/release.fallback.json`, which is committed, so the build never fails offline or when the
+API rate-limits.
+
+Matching on the suffix rather than the whole filename is load-bearing, not incidental: **the
+published v0.5.0 assets are still named `MyMediaVault-*`**, because the source rename to
+`EverythingBox` landed after that release was cut. (The app README's download table links to
+`EverythingBox-*` names and therefore currently 404s — a separate bug in the app repo.) Suffix
+matching makes this site correct both today and after the next release renames the assets, with no
+edit.
+
+Rejected alternatives: `/releases/latest/download/<asset>` permalinks (they hardcode a filename,
+which is exactly the thing currently wrong); hardcoded version numbers (stale every release);
+client-side fetch (needs JS, flashes an empty state, fails without network).
+
+A platform whose asset is absent renders a "see all releases" card rather than a broken link. The
+Windows debug-symbol archive (`-pdb.zip`) is never offered.
 
 **Images.** Astro's `<Image>` component emits AVIF/WebP with responsive `srcset`; everything below
 the fold is lazy. Source captures live in `src/assets/shots/`.
