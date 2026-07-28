@@ -20,6 +20,16 @@ npm run check
 
 That is the gate: build → type check → tests → link check. It must pass before anything ships.
 
+## Deploy
+
+Pushing to `main` publishes to GitHub Pages at <https://everything-box.com> via
+`.github/workflows/deploy.yml`. The workflow runs `npm run check` first, so a failing
+gate blocks the deploy rather than shipping a broken site.
+
+The domain is bound by `public/CNAME`; deleting that file would move the site back to
+`cubman3134.github.io/EverythingBoxWebsite`. DNS lives at GoDaddy: four apex `A` records
+pointing at GitHub's Pages IPs, plus `www` as a `CNAME` to `cubman3134.github.io`.
+
 ## Layout
 
 | Path | What it is |
