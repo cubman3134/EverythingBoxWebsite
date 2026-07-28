@@ -40,11 +40,40 @@ export const screenshots: Screenshot[] = [
     category: 'video',
   },
   {
+    id: 'show-episodes',
+    file: 'show-episodes.png',
+    caption: 'A series drilled down to a season, every episode with its own still and title.',
+    theme: 'channels',
+    category: 'video',
+  },
+  {
     id: 'games-library',
     file: 'games-library.png',
     caption:
       'The games library, with box art, a logo, screen art and how long you have played each one.',
     theme: 'triple',
+    category: 'games',
+  },
+  {
+    id: 'emu-systems',
+    file: 'emu-systems.png',
+    caption: 'Games organised by system — dozens of consoles and computers, side by side.',
+    theme: 'channels',
+    category: 'games',
+  },
+  {
+    id: 'game-detail',
+    file: 'game-detail.png',
+    caption: 'A game in full: developer, publisher, player count, genre and age rating.',
+    theme: 'channels',
+    category: 'games',
+  },
+  {
+    id: 'remap',
+    file: 'remap.png',
+    caption:
+      'Input mapping — per player, per profile, with separate controller and keyboard bindings and turbo.',
+    theme: 'channels',
     category: 'games',
   },
   {

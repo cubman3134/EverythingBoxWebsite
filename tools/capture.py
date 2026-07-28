@@ -54,19 +54,37 @@ TARGETS = [
     ("home-triple", "", '"themedView": "home"'),
 ]
 
-# Targets the plan called for that are NOT yet automated. Each needs media to be
-# playing or a view that this harness has not been taught to reach. Listed here so the
-# gap is visible in the tooling rather than only in a commit message.
-NOT_YET_AUTOMATED = [
-    "video-playing",   # needs a local video actually playing
-    "music-playing",   # needs the now-playing view with the queue panel
-    "emu-running",     # needs a ROM booted in a libretro core
-    "reader-book",     # enter on a book did not open the reader from the home column
-    "reader-comic",
+# Targets the plan called for that are NOT captured, and why. Every one of these was
+# attempted against the live app; each is blocked by CONTENT that does not exist on this
+# machine, not by missing navigation. Recorded here so the gap stays visible in the
+# tooling rather than only in a commit message.
+#
+#   emu-running   No ROM exists anywhere on this machine. C:/EverythingBox-app/roms/*
+#                 and C:/Users/cubma/ROMs/* are empty scaffolding (systeminfo.txt only)
+#                 and the remote-docs cache is empty, so every library game is a catalog
+#                 entry whose file is absent — "Play" correctly does nothing. Unblocking
+#                 this needs a ROM on disk; it is not a harness problem.
+#   reader-pdf    The only non-personal PDF on disk is a blank probe page that renders
+#                 the PRE-RENAME product name, so it is unusable twice over. The user's
+#                 other PDFs are personal documents and are off limits.
+#   reader-comic  No .cbz/.cbr on disk.
+#   reader-book   REACHABLE via `uitest.py open <path>` and verified working, but the
+#                 only EPUB on disk is a lorem-ipsum test fixture, which reads as
+#                 placeholder on a marketing page. Recapture against a real book.
+#   video-playing REACHABLE and verified working (libmpv, fullscreen). Not shipped
+#                 because the only non-personal video on disk is another project's
+#                 branded intro reel.
+#   music-playing Same shape as video-playing: needs an audio file that is neither
+#                 personal nor third-party-branded.
+#   downloads     The queue is empty and populating it means starting a real download.
+NOT_CAPTURED = [
+    "emu-running",
     "reader-pdf",
-    "downloads",       # reachable from Settings > Downloads; path not yet derived
-    "remap",           # reachable from Settings > Input Mapping; path not yet derived
-    "show-episodes",   # a series drilled down to episodes
+    "reader-comic",
+    "reader-book",
+    "video-playing",
+    "music-playing",
+    "downloads",
 ]
 
 
