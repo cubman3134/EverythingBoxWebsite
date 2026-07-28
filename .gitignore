@@ -19,3 +19,6 @@ Thumbs.db
 .idea/
 # hero loop source frames — the encoded output in public/ is what ships
 src/assets/hero-frames/
+
+# rendered pictures of the site itself (review aid, not shipped content)
+.site-shots/
