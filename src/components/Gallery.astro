@@ -1,0 +1,76 @@
+---
+import { Image } from 'astro:assets';
+import { screenshots } from '../data/screenshots';
+import { shotById } from '../lib/shots';
+import Lightbox from './Lightbox.astro';
+
+const categories = ['all', 'video', 'games', 'music', 'reading', 'system'] as const;
+const items = screenshots.map((s) => ({ meta: s, shot: shotById(s.id) }));
+---
+
+<div class="mb-8 flex flex-wrap gap-2">
+  {
+    categories.map((c) => (
+      <button
+        data-filter={c}
+        class="filter-btn rounded-full border border-edge px-3 py-1 text-sm capitalize text-muted"
+        aria-pressed={c === 'all' ? 'true' : 'false'}
+      >
+        {c}
+      </button>
+    ))
+  }
+</div>
+
+<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+  {
+    items.map(({ meta, shot }) => (
+      <figure class="gallery-item" data-category={meta.category}>
+        <button
+          data-lightbox
+          data-full={shot.src.src}
+          data-caption={shot.caption}
+          class="block w-full cursor-zoom-in"
+        >
+          <Image
+            src={shot.src}
+            alt={shot.caption}
+            widths={[400, 800]}
+            sizes="400px"
+            loading="lazy"
+            class="w-full rounded-lg border border-edge"
+          />
+        </button>
+        <figcaption class="mt-2 text-sm text-muted">{shot.caption}</figcaption>
+      </figure>
+    ))
+  }
+</div>
+
+<Lightbox />
+
+<script>
+  // Island 3 of 5: category filter. Without JavaScript every item stays visible, which
+  // is the correct unfiltered state.
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const items = document.querySelectorAll<HTMLElement>('.gallery-item');
+
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      const want = b.dataset.filter;
+      buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      items.forEach((it) => {
+        it.hidden = want !== 'all' && it.dataset.category !== want;
+      });
+    }),
+  );
+</script>
+
+<style>
+  .filter-btn[aria-pressed='true'] {
+    background: var(--color-accent);
+    color: var(--color-base);
+    border-color: var(--color-accent);
+    font-weight: 600;
+  }
+</style>

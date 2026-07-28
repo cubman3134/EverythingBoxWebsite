@@ -1,0 +1,24 @@
+---
+import Shot from './Shot.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  body: string;
+  shotId: string;
+  /** Put the text on the right instead of the left, so blocks alternate down the page. */
+  flip?: boolean;
+}
+const { eyebrow, title, body, shotId, flip = false } = Astro.props;
+---
+
+<section class="grid items-center gap-10 border-t border-edge/60 py-16 md:grid-cols-2">
+  <div class={flip ? 'md:order-2' : ''}>
+    <p class="text-sm font-semibold uppercase tracking-widest text-accent">{eyebrow}</p>
+    <h2 class="mt-3 text-3xl font-bold">{title}</h2>
+    <p class="mt-4 leading-relaxed text-muted">{body}</p>
+  </div>
+  <div class={flip ? 'md:order-1' : ''}>
+    <Shot id={shotId} caption="" />
+  </div>
+</section>

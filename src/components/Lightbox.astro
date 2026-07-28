@@ -1,0 +1,47 @@
+---
+// Island 2 of 5. Progressive: with JavaScript off the gallery images are still visible
+// in the grid; the lightbox only enlarges one.
+---
+
+<div
+  id="lightbox"
+  hidden
+  class="fixed inset-0 z-[100] hidden place-items-center bg-black/90 p-6 [&:not([hidden])]:grid"
+>
+  <button id="lightboxClose" class="absolute right-5 top-4 text-3xl text-ink" aria-label="Close">
+    &times;
+  </button>
+  <figure class="max-h-full">
+    <img id="lightboxImg" alt="" class="max-h-[80vh] w-auto rounded-lg border border-edge" />
+    <figcaption id="lightboxCap" class="mt-3 text-center text-sm text-muted"></figcaption>
+  </figure>
+</div>
+
+<script>
+  const box = document.getElementById('lightbox');
+  const img = document.getElementById('lightboxImg') as HTMLImageElement | null;
+  const cap = document.getElementById('lightboxCap');
+
+  function close() {
+    if (box) box.hidden = true;
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-lightbox]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const src = el.dataset.full;
+      if (!box || !img || !src) return;
+      img.src = src;
+      img.alt = el.dataset.caption ?? '';
+      if (cap) cap.textContent = el.dataset.caption ?? '';
+      box.hidden = false;
+    });
+  });
+
+  document.getElementById('lightboxClose')?.addEventListener('click', close);
+  box?.addEventListener('click', (e) => {
+    if (e.target === box) close();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+  });
+</script>

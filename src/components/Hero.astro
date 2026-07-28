@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+import Glow from './Glow.astro';
+import { shotById } from '../lib/shots';
+import { resolveRelease, formatSize } from '../lib/release';
+
+const shot = shotById('video-library');
+const release = await resolveRelease();
+// Serialised for the platform-detection island. Build-time data — no runtime fetch.
+const assets = release.assets.map((a) => ({
+  id: a.platformId,
+  url: a.url,
+  size: formatSize(a.size),
+}));
+---
+
+<section class="relative overflow-hidden pt-24 text-center">
+  <Glow className="-top-32" />
+
+  <h1 class="display mx-auto max-w-3xl px-5 text-5xl sm:text-6xl md:text-7xl">
+    Every screen.<br /><span class="text-accent">One box.</span>
+  </h1>
+
+  <p class="mx-auto mt-6 max-w-xl px-5 text-lg text-muted">
+    Films, shows, music, games, comics and books — in one native app, on your desktop, your phone
+    and your television.
+  </p>
+
+  <div class="mt-8 flex flex-wrap items-center justify-center gap-3 px-5">
+    <a id="heroCta" href="/download" class="rounded-lg bg-accent px-6 py-3 font-semibold text-base">
+      Download
+    </a>
+    <a
+      href="/download"
+      class="rounded-lg border border-edge px-6 py-3 font-medium text-muted hover:text-ink"
+    >
+      All platforms
+    </a>
+  </div>
+
+  <p class="mt-4 text-xs text-muted">Free and open source · {release.version}</p>
+
+  <div class="relative mx-auto mt-14 max-w-5xl px-5">
+    <Image
+      src={shot.src}
+      alt="EverythingBox browsing a film library on a television"
+      widths={[800, 1400, 2000]}
+      sizes="(max-width: 1024px) 100vw, 1024px"
+      loading="eager"
+      class="w-full rounded-t-xl border border-b-0 border-edge"
+    />
+  </div>
+</section>
+
+<script define:vars={{ assets }}>
+  // Island 4 of 5: platform detection. This only UPGRADES the CTA — with JavaScript
+  // off it stays "Download" pointing at /download, which is correct for everyone.
+  const cta = document.getElementById('heroCta');
+  if (cta && assets.length) {
+    const ua = navigator.userAgent;
+    const label = {
+      windows: 'Windows',
+      macos: 'macOS',
+      linux: 'Linux',
+      android: 'Android',
+      ios: 'iOS',
+    };
+    let id = null;
+    if (/Windows/i.test(ua)) id = 'windows';
+    else if (/iPhone|iPad|iPod/i.test(ua)) id = 'ios';
+    else if (/Android/i.test(ua)) id = 'android';
+    else if (/Macintosh|Mac OS X/i.test(ua)) id = 'macos';
+    else if (/Linux/i.test(ua)) id = 'linux';
+
+    const hit = assets.find((a) => a.id === id);
+    if (hit) {
+      cta.textContent = `Download for ${label[id]}`;
+      cta.setAttribute('href', hit.url);
+    }
+  }
+</script>

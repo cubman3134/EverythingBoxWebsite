@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import Glow from '../components/Glow.astro';
+import Gallery from '../components/Gallery.astro';
+---
+
+<Base
+  title="Screenshots — EverythingBox"
+  description="EverythingBox running, across both themes and every kind of media."
+>
+  <section class="relative pt-20 pb-10">
+    <Glow className="top-0" />
+    <h1 class="display text-5xl">Screenshots</h1>
+    <p class="mt-4 max-w-2xl text-muted">
+      All captured from the running application. Nothing here is a mockup.
+    </p>
+  </section>
+  <div class="pb-20"><Gallery /></div>
+</Base>

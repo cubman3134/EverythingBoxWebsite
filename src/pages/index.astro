@@ -1,9 +1,133 @@
 ---
 import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import FeatureBlock from '../components/FeatureBlock.astro';
 import Shot from '../components/Shot.astro';
+import { themes, themeRegistryUrl } from '../data/themes';
+import { systems } from '../data/systems';
+
+const faqs = [
+  {
+    q: 'Does it come with anything to watch or play?',
+    a: 'No. EverythingBox is a player and a library. It ships no media, no games and no BIOS files — it plays what you already have and what you choose to connect it to.',
+  },
+  {
+    q: 'Does it work on a television?',
+    a: 'Yes. Every screen is navigable with a D-pad, and the Android build carries a TV launcher entry, so it works on Android TV devices, Shield and Google TV with a remote or a controller.',
+  },
+  {
+    q: 'What does it cost?',
+    a: 'Nothing. It is free software under the GPLv3 — you can use it, study it, change it and share it.',
+  },
+  {
+    q: 'Do I need to convert or rename my files?',
+    a: 'No. Video runs on libmpv, which plays essentially anything, and the library scans your folders in place without renaming or moving anything.',
+  },
+];
 ---
 
-<Base title="EverythingBox" description="One native app for everything you watch, play and read.">
-  <h1 class="display mt-24 text-5xl">EverythingBox</h1>
-  <Shot id="home-triple" />
+<Base
+  title="EverythingBox — one app for everything you watch, play and read"
+  description="A native media hub for films, shows, music, games, comics and books. Windows, macOS, Linux, Android TV and iOS. Free and open source."
+  wide
+>
+  <Hero />
+
+  <div class="mx-auto w-full max-w-6xl px-5">
+    <section class="grid gap-6 border-t border-edge/60 py-12 text-center sm:grid-cols-3">
+      <div>
+        <p class="display text-4xl text-accent">6</p>
+        <p class="mt-1 text-sm text-muted">kinds of media, one library</p>
+      </div>
+      <div>
+        <p class="display text-4xl text-accent">{systems.length}</p>
+        <p class="mt-1 text-sm text-muted">game systems</p>
+      </div>
+      <div>
+        <p class="display text-4xl text-accent">5</p>
+        <p class="mt-1 text-sm text-muted">platforms, one codebase</p>
+      </div>
+    </section>
+
+    <FeatureBlock
+      eyebrow="Video"
+      title="Plays what other apps refuse to"
+      body="Video runs on libmpv, the engine behind mpv. MKV, HEVC, AV1, AC3 — including large files streamed rather than copied first. Subtitles, per-file resume, and a chapter-aware skip for intros and recaps."
+      shotId="video-library"
+    />
+    <FeatureBlock
+      eyebrow="Games"
+      title="Sixty-three systems, nothing to configure"
+      body="Cores load straight into the application, so retro systems just run. For modern consoles the app fetches the established standalone emulator from its official source and sets it up for you. Four controllers, per-port remapping, rumble, save states and achievements."
+      shotId="games-library"
+      flip
+    />
+    <FeatureBlock
+      eyebrow="Music"
+      title="A folder is a playlist"
+      body="MP3, FLAC, OGG and the rest, with folder queueing, automatic advance, and cover art matched in for you."
+      shotId="music-library"
+    />
+    <FeatureBlock
+      eyebrow="Reading"
+      title="Books, comics and PDFs"
+      body="An EPUB reader that parses the spine and contents, a comic reader for CBZ and CBR, and PDFs rendered by PDFium. Every one of them remembers your place."
+      shotId="reading-detail"
+      flip
+    />
+    <FeatureBlock
+      eyebrow="Extensibility"
+      title="Addons, sandboxed"
+      body="Teach the app about a new source with a manifest and a script. Each addon runs in an isolated interpreter with an execution timeout, off the interface thread, so nothing an addon does can freeze the app. EverythingBox ships the engine, not the sources."
+      shotId="movie-detail"
+    />
+
+    <section class="border-t border-edge/60 py-16">
+      <p class="text-sm font-semibold uppercase tracking-widest text-accent">Themes</p>
+      <h2 class="mt-3 text-3xl font-bold">Make it look like whatever you want</h2>
+      <p class="mt-4 max-w-2xl text-muted">
+        Two themes ship with the app — a wall of channels and a dark cross-media bar — and more
+        install from the <a class="text-accent" href={themeRegistryUrl}>theme gallery</a>. A theme is
+        a JSON file you can edit: colours, layout and artwork.
+      </p>
+      <div class="mt-8 grid gap-8 sm:grid-cols-2">
+        {
+          themes.map((t) => (
+            <div>
+              <Shot id={t.shot} caption="" />
+              <h3 class="font-semibold">{t.name}</h3>
+              <p class="mt-1 text-sm text-muted">{t.blurb}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="border-t border-edge/60 py-16">
+      <h2 class="text-3xl font-bold">Questions</h2>
+      <div class="mt-8 grid gap-8 md:grid-cols-2">
+        {
+          faqs.map((f) => (
+            <div>
+              <h3 class="font-semibold">{f.q}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-muted">{f.a}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="border-t border-edge/60 py-20 text-center">
+      <h2 class="display text-4xl">Get it</h2>
+      <p class="mx-auto mt-4 max-w-lg text-muted">
+        Windows, macOS, Linux, Android TV and iOS. Free, and always will be.
+      </p>
+      <a
+        href="/download"
+        class="mt-8 inline-block rounded-lg bg-accent px-8 py-3.5 font-semibold text-base"
+      >
+        Download EverythingBox
+      </a>
+    </section>
+  </div>
 </Base>
