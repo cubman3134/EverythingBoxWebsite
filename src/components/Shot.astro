@@ -1,0 +1,26 @@
+---
+import { Image } from 'astro:assets';
+import { shotById } from '../lib/shots';
+
+interface Props {
+  id: string;
+  /** Pass "" to suppress the caption where surrounding prose already names the screen. */
+  caption?: string;
+  priority?: boolean;
+}
+const { id, caption, priority = false } = Astro.props;
+const shot = shotById(id);
+const text = caption ?? shot.caption;
+---
+
+<figure class="my-6">
+  <Image
+    src={shot.src}
+    alt={text || shot.caption}
+    widths={[640, 1024, 1600]}
+    sizes="(max-width: 768px) 100vw, 1024px"
+    loading={priority ? 'eager' : 'lazy'}
+    class="w-full rounded-lg border border-edge"
+  />
+  {text && <figcaption class="mt-2 text-sm text-muted">{text}</figcaption>}
+</figure>
