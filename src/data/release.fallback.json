@@ -1,0 +1,36 @@
+{
+  "version": "v0.5.0",
+  "publishedAt": "2026-07-23T19:02:21Z",
+  "assets": [
+    {
+      "platformId": "windows",
+      "name": "MyMediaVault-windows-x64.zip",
+      "url": "https://github.com/cubman3134/EverythingBox/releases/download/v0.5.0/MyMediaVault-windows-x64.zip",
+      "size": 113840490
+    },
+    {
+      "platformId": "macos",
+      "name": "MyMediaVault-macos-arm64.dmg",
+      "url": "https://github.com/cubman3134/EverythingBox/releases/download/v0.5.0/MyMediaVault-macos-arm64.dmg",
+      "size": 94842308
+    },
+    {
+      "platformId": "linux",
+      "name": "MyMediaVault-linux-x86_64.AppImage",
+      "url": "https://github.com/cubman3134/EverythingBox/releases/download/v0.5.0/MyMediaVault-linux-x86_64.AppImage",
+      "size": 129718776
+    },
+    {
+      "platformId": "android",
+      "name": "MyMediaVault-android-arm64.apk",
+      "url": "https://github.com/cubman3134/EverythingBox/releases/download/v0.5.0/MyMediaVault-android-arm64.apk",
+      "size": 34623858
+    },
+    {
+      "platformId": "ios",
+      "name": "MyMediaVault-ios-arm64.ipa",
+      "url": "https://github.com/cubman3134/EverythingBox/releases/download/v0.5.0/MyMediaVault-ios-arm64.ipa",
+      "size": 28255979
+    }
+  ]
+}
