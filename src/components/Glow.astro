@@ -1,0 +1,15 @@
+---
+// The signature gold radial. Used at most once per section — importing this
+// component, rather than inlining the gradient, is what keeps that countable.
+interface Props {
+  className?: string;
+}
+const { className = '' } = Astro.props;
+---
+
+<div
+  aria-hidden="true"
+  class={`pointer-events-none absolute left-1/2 -translate-x-1/2 -z-10 ${className}`}
+  style="width:min(900px,120vw);height:520px;background:radial-gradient(ellipse at center, rgba(232,177,58,.30), rgba(232,177,58,0) 68%);"
+>
+</div>

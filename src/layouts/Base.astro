@@ -1,0 +1,90 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Full-bleed pages (the home page) manage their own horizontal padding. */
+  wide?: boolean;
+}
+const { title, description, wide = false } = Astro.props;
+
+const nav = [
+  { href: '/features', label: 'Features' },
+  { href: '/emulation', label: 'Emulation' },
+  { href: '/addons', label: 'Addons' },
+  { href: '/screenshots', label: 'Screenshots' },
+  { href: '/docs', label: 'Docs' },
+];
+const path = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/appicon.png" />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <header class="sticky top-0 z-50 border-b border-edge/60 bg-base/85 backdrop-blur">
+      <nav class="mx-auto flex max-w-6xl items-center gap-6 px-5 py-3">
+        <a href="/" class="flex items-center gap-2 font-extrabold">
+          <img src="/appicon.png" alt="" width="24" height="24" />
+          EverythingBox
+        </a>
+        <div class="ml-auto hidden items-center gap-5 text-sm text-muted md:flex">
+          {
+            nav.map((i) => (
+              <a href={i.href} class={path.startsWith(i.href) ? 'text-accent' : 'hover:text-ink'}>
+                {i.label}
+              </a>
+            ))
+          }
+          <a href="/download" class="rounded-md bg-accent px-3 py-1.5 font-semibold text-base">
+            Download
+          </a>
+        </div>
+        <button
+          id="navToggle"
+          class="ml-auto text-sm text-muted md:hidden"
+          aria-expanded="false"
+          aria-controls="mobileNav">Menu</button
+        >
+      </nav>
+      <div id="mobileNav" hidden class="border-t border-edge/60 px-5 py-3 md:hidden">
+        {nav.map((i) => <a href={i.href} class="block py-2 text-muted">{i.label}</a>)}
+        <a href="/download" class="block py-2 font-semibold text-accent">Download</a>
+      </div>
+    </header>
+
+    <main class={wide ? 'flex-1' : 'mx-auto w-full max-w-6xl flex-1 px-5'}>
+      <slot />
+    </main>
+
+    <footer class="mt-24 border-t border-edge/60 px-5 py-10 text-sm text-muted">
+      <div class="mx-auto flex max-w-6xl flex-wrap gap-6">
+        <p>EverythingBox is free software under the GNU General Public License v3.0.</p>
+        <a class="ml-auto hover:text-ink" href="https://github.com/cubman3134/EverythingBox">
+          Source on GitHub
+        </a>
+      </div>
+    </footer>
+
+    <script>
+      // Island 1 of 5: mobile nav.
+      const btn = document.getElementById('navToggle');
+      const panel = document.getElementById('mobileNav');
+      btn?.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!open));
+        if (panel) panel.hidden = open;
+      });
+    </script>
+  </body>
+</html>

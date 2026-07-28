@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+/* Tokens derived from the app icon: a navy box with warm gold light spilling out. */
+@theme {
+  --color-base: #0d1424;
+  --color-surface: #131c33;
+  --color-accent: #e8b13a;
+  --color-ink: #f6f1e4;
+  --color-muted: #a9b3c9;
+  --color-edge: #2c3856;
+  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html {
+  background: var(--color-base);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-base);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Display sizes get tight tracking; body text keeps normal tracking. */
+.display {
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  font-weight: 800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
