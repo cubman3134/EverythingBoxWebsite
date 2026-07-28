@@ -39,10 +39,25 @@ export function matchAssets(assets: ApiAsset[]): ResolvedAsset[] {
  */
 export async function resolveRelease(): Promise<Release> {
   try {
+    // Unauthenticated calls are rate-limited to 60/hr PER IP, and CI runners share
+    // addresses — so without a token a rate-limited build falls back silently and the
+    // site keeps advertising an old version after a release. A token raises this to
+    // 1000/hr for the repo. Optional: local builds work fine without one.
+    const token = process.env.GITHUB_TOKEN;
     const res = await fetch(API, {
-      headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'everythingbox-website' },
+      headers: {
+        Accept: 'application/vnd.github+json',
+        'User-Agent': 'everythingbox-website',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
     });
-    if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
+    if (!res.ok) {
+      throw new Error(
+        res.status === 403 || res.status === 429
+          ? `GitHub API rate-limited (${res.status})${token ? '' : ' — no GITHUB_TOKEN was set'}`
+          : `GitHub API returned ${res.status}`,
+      );
+    }
     const json = (await res.json()) as {
       tag_name: string;
       published_at: string;

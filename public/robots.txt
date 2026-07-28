@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://everything-box.com/sitemap-index.xml

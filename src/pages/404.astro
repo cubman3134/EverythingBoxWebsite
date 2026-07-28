@@ -1,0 +1,49 @@
+---
+// GitHub Pages serves dist/404.html for any unmatched path automatically, so this file
+// is all that is needed to replace its generic "Page not found · GitHub Pages" screen.
+import Base from '../layouts/Base.astro';
+import Glow from '../components/Glow.astro';
+
+const links = [
+  { href: '/download', label: 'Download', blurb: 'Builds for every platform.' },
+  { href: '/features', label: 'Features', blurb: 'Everything the app does.' },
+  { href: '/emulation', label: 'Emulation', blurb: '63 systems.' },
+  { href: '/screenshots', label: 'Screenshots', blurb: 'The app, running.' },
+  { href: '/addons', label: 'Addons', blurb: 'Extend it yourself.' },
+  { href: '/docs', label: 'Docs', blurb: 'Getting started and troubleshooting.' },
+];
+---
+
+<Base
+  title="Page not found — EverythingBox"
+  description="That page does not exist. Here is everything else."
+>
+  <section class="relative pt-24 pb-10 text-center">
+    <Glow className="top-0" />
+    <p class="display text-7xl text-accent">404</p>
+    <h1 class="mt-4 text-3xl font-bold">That page does not exist</h1>
+    <p class="mx-auto mt-4 max-w-md text-muted">
+      The link may be out of date, or the address slightly off. Everything else is below.
+    </p>
+    <a
+      href="/"
+      class="mt-8 inline-block rounded-lg bg-accent px-6 py-3 font-semibold text-base"
+    >
+      Back to the home page
+    </a>
+  </section>
+
+  <div class="grid gap-4 pb-24 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      links.map((l) => (
+        <a
+          href={l.href}
+          class="rounded-lg border border-edge bg-surface p-5 hover:border-accent"
+        >
+          <h2 class="font-semibold">{l.label}</h2>
+          <p class="mt-1 text-sm text-muted">{l.blurb}</p>
+        </a>
+      ))
+    }
+  </div>
+</Base>

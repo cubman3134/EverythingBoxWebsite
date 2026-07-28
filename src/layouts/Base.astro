@@ -9,6 +9,12 @@ interface Props {
 }
 const { title, description, wide = false } = Astro.props;
 
+// Absolute URLs, required by canonical and by every social crawler — a relative
+// og:image is simply ignored. Astro.site comes from astro.config.mjs, so these follow
+// the deploy target rather than hardcoding the domain in two places.
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+
 const nav = [
   { href: '/features', label: 'Features' },
   { href: '/emulation', label: 'Emulation' },
@@ -26,10 +32,30 @@ const path = Astro.url.pathname;
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:site_name" content="EverythingBox" />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="EverythingBox — one app for films, shows, music, games, comics and books"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage.href} />
+
+    <meta name="theme-color" content="#0d1424" />
     <link rel="icon" href="/appicon.png" />
+    <link rel="apple-touch-icon" href="/appicon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
   <body class="flex min-h-screen flex-col">
     <header class="sticky top-0 z-50 border-b border-edge/60 bg-base/85 backdrop-blur">

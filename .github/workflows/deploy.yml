@@ -33,7 +33,15 @@ jobs:
       # The repo's own gate: build -> type check -> tests -> link check.
       # Nothing ships unless all four pass. `build` runs first, so this also
       # produces the dist/ that gets uploaded below.
+      #
+      # GITHUB_TOKEN is passed so the build's Releases API lookup is authenticated.
+      # Unauthenticated calls are capped at 60/hr per IP and runners share addresses;
+      # a rate-limited build would fall back to the committed snapshot silently and
+      # keep advertising the previous version. This is a read of a public endpoint —
+      # the job's `contents: read` permission is all it needs.
       - run: npm run check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/configure-pages@v5
 
