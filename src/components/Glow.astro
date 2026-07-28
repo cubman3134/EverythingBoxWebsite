@@ -1,6 +1,11 @@
 ---
-// The signature gold radial. Used at most once per section — importing this
-// component, rather than inlining the gradient, is what keeps that countable.
+// The signature gold radial. Used at most once per section — importing this component,
+// rather than inlining the gradient, is what keeps that countable.
+//
+// The gradient is deliberately wider than the viewport (120vw) so its falloff runs off
+// both edges instead of ending in a visible circle. That means it MUST be clipped: the
+// outer element spans the parent exactly and hides overflow, so the glow can never push
+// the page into a horizontal scroll on narrow screens.
 interface Props {
   className?: string;
 }
@@ -9,7 +14,11 @@ const { className = '' } = Astro.props;
 
 <div
   aria-hidden="true"
-  class={`pointer-events-none absolute left-1/2 -translate-x-1/2 -z-10 ${className}`}
-  style="width:min(900px,120vw);height:520px;background:radial-gradient(ellipse at center, rgba(232,177,58,.30), rgba(232,177,58,0) 68%);"
+  class={`pointer-events-none absolute inset-x-0 -z-10 h-[520px] overflow-hidden ${className}`}
 >
+  <div
+    class="absolute left-1/2 h-[520px] -translate-x-1/2"
+    style="width:min(900px,120vw);background:radial-gradient(ellipse at center, rgba(232,177,58,.30), rgba(232,177,58,0) 68%);"
+  >
+  </div>
 </div>
