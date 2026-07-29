@@ -39,7 +39,7 @@ export const features: Feature[] = [
   },
   {
     group: 'Library',
-    title: 'Eight kinds of media, one library',
+    title: 'All your media, one library',
     body: 'Films, shows, games, music, audiobooks, books, comics and manga each get their own catalog, with posters, logos, banners, backdrops and descriptions — so a shelf of filenames becomes something you can browse by cover.',
   },
   {

@@ -45,11 +45,12 @@ describe('the site actually says so', () => {
     expect(all).toContain('manga');
   });
 
-  it('never advertises a count that contradicts the generated list', () => {
-    // The home page prints mediaKinds.length; guard against someone hardcoding it back.
+  it('advertises no fixed count of media kinds', () => {
+    // Deliberate: addons can declare catalogs the app has never heard of, so any number
+    // here would understate it. The stat row claims "All your media" instead.
     const home = readFileSync('dist/index.html', 'utf8');
-    expect(home).toContain(`>${mediaKinds.length}</p>`);
-    expect(home).not.toMatch(/>6<\/p>\s*<p[^>]*>\s*kinds of media/);
+    expect(home).not.toMatch(/kinds of media/);
+    expect(home).toContain('All your media');
   });
 
 

@@ -5,7 +5,7 @@ import FeatureBlock from '../components/FeatureBlock.astro';
 import Shot from '../components/Shot.astro';
 import { themes, themeRegistryUrl, addonRegistryUrl } from '../data/themes';
 import { systems } from '../data/systems';
-import { mediaKinds } from '../data/mediaKinds';
+
 
 const faqs = [
   {
@@ -35,11 +35,13 @@ const faqs = [
   <Hero />
 
   <div class="mx-auto w-full max-w-6xl px-5">
+    {/*
+      No count for the media kinds on purpose. Addons can declare catalogs the app has
+      never heard of, so any number here would understate it and would need chasing every
+      time the bundled set changes. The two finite things get numbers; the open-ended one
+      gets a claim.
+    */}
     <section class="grid gap-6 border-t border-edge/60 py-12 text-center sm:grid-cols-3">
-      <div>
-        <p class="display text-4xl text-accent">{mediaKinds.length}</p>
-        <p class="mt-1 text-sm text-muted">kinds of media, one library</p>
-      </div>
       <div>
         <p class="display text-4xl text-accent">{systems.length}</p>
         <p class="mt-1 text-sm text-muted">game systems</p>
@@ -47,6 +49,10 @@ const faqs = [
       <div>
         <p class="display text-4xl text-accent">5</p>
         <p class="mt-1 text-sm text-muted">platforms, one codebase</p>
+      </div>
+      <div>
+        <p class="display text-4xl text-accent">All your media</p>
+        <p class="mt-1 text-sm text-muted">one library</p>
       </div>
     </section>
 
@@ -79,7 +85,7 @@ const faqs = [
     <section class="grid items-center gap-10 border-t border-edge/60 py-16 md:grid-cols-2">
       <div>
         <p class="text-sm font-semibold uppercase tracking-widest text-accent">Extensibility</p>
-        <h2 class="mt-3 text-3xl font-bold">The eight are just the ones it ships with</h2>
+        <h2 class="mt-3 text-3xl font-bold">Whatever ships is just the starting point</h2>
         <p class="mt-4 leading-relaxed text-muted">
           An addon can declare <em>any</em> catalog you like. Podcasts, live sports, magazines,
           lectures, concert recordings, your own archive — if you can write thirty lines of
