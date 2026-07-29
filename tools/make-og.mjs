@@ -57,7 +57,7 @@ const html = `<!doctype html>
   <div class="wrap">
     <div class="brand">EverythingBox</div>
     <h1>All your media.<br><span>One box.</span></h1>
-    <p>Films, shows, games, music, audiobooks, books, comics and manga — one native app.</p>
+    <p>Films, shows, games, music, audiobooks, books, comics, manga — and anything else you can imagine.</p>
   </div>
   <div class="foot">Windows · macOS · Linux · Android TV · iOS · Free and open source</div>
 </body></html>`;
