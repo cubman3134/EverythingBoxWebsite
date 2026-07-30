@@ -40,3 +40,14 @@ export const community: CommunityLink[] = [
 export const discordUrl = community[0]!.href;
 export const redditUrl = community[1]!.href;
 export const githubUrl = community[2]!.href;
+
+/**
+ * Deliberately NOT part of `community` above. That array drives the home page's
+ * "Somewhere to ask" cards, and a funding link is not somewhere you ask a question —
+ * dropping it in there would make the section mean two things at once. It gets its own
+ * slot in the nav and the footer instead.
+ */
+export const supporter = {
+  label: 'Become a supporter',
+  href: 'https://www.patreon.com/c/TheEverythingBox',
+} as const;
