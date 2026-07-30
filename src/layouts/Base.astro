@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { community } from '../data/community';
 
 interface Props {
   title: string;
@@ -97,11 +98,17 @@ const path = Astro.url.pathname;
     </main>
 
     <footer class="mt-24 border-t border-edge/60 px-5 py-10 text-sm text-muted">
-      <div class="mx-auto flex max-w-6xl flex-wrap gap-6">
+      <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-4">
         <p>EverythingBox is free software under the GNU General Public License v3.0.</p>
-        <a class="ml-auto hover:text-ink" href="https://github.com/cubman3134/EverythingBox">
-          Source on GitHub
-        </a>
+        <nav class="ml-auto flex flex-wrap items-center gap-5">
+          {
+            community.map((c) => (
+              <a class="hover:text-ink" href={c.href} rel="noopener">
+                {c.id === 'github' ? 'Source on GitHub' : c.name}
+              </a>
+            ))
+          }
+        </nav>
       </div>
     </footer>
 
