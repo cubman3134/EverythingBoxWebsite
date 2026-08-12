@@ -21,6 +21,7 @@ const ogImage = new URL('/og.png', Astro.site);
 const nav = [
   { href: '/features', label: 'Features' },
   { href: '/emulation', label: 'Emulation' },
+  { href: '/retropark', label: 'RetroPark' },
   { href: '/addons', label: 'Addons' },
   { href: '/screenshots', label: 'Screenshots' },
   { href: '/docs', label: 'Docs' },
@@ -68,7 +69,7 @@ const path = Astro.url.pathname;
           <img src="/appicon.png" alt="" width="24" height="24" />
           EverythingBox
         </a>
-        <div class="ml-auto hidden items-center gap-5 text-sm text-muted md:flex">
+        <div class="ml-auto hidden items-center gap-5 text-sm text-muted lg:flex">
           {
             nav.map((i) => (
               <a href={i.href} class={path.startsWith(i.href) ? 'text-accent' : 'hover:text-ink'}>
@@ -85,12 +86,12 @@ const path = Astro.url.pathname;
         </div>
         <button
           id="navToggle"
-          class="ml-auto text-sm text-muted md:hidden"
+          class="ml-auto text-sm text-muted lg:hidden"
           aria-expanded="false"
           aria-controls="mobileNav">Menu</button
         >
       </nav>
-      <div id="mobileNav" hidden class="border-t border-edge/60 px-5 py-3 md:hidden">
+      <div id="mobileNav" hidden class="border-t border-edge/60 px-5 py-3 lg:hidden">
         {nav.map((i) => <a href={i.href} class="block py-2 text-muted">{i.label}</a>)}
         <a href={supporter.href} rel="noopener" class="block py-2 text-accent">{supporter.label}</a>
         <a href="/download" class="block py-2 font-semibold text-accent">Download</a>

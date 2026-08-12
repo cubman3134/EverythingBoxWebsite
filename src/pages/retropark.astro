@@ -1,0 +1,250 @@
+---
+import Base from '../layouts/Base.astro';
+import Glow from '../components/Glow.astro';
+import { discordUrl } from '../data/community';
+import {
+  coreModels,
+  retroparkAbiVersion,
+  retroparkCores,
+  retroparkRepo,
+} from '../data/retropark';
+
+const driven = retroparkCores.filter((c) => c.model === 'driven');
+const presenting = retroparkCores.filter((c) => c.model === 'presenting');
+---
+
+<Base
+  title="RetroPark — the emulation runtime behind EverythingBox"
+  description="A runtime that loads emulator cores through a stable flat-C contract, with two core models so a Game Boy core and a full PS3 emulator can both be a core without either pretending to be the other."
+>
+  <section class="relative pt-20 pb-10">
+    <Glow className="top-0" />
+    <p class="text-sm font-semibold uppercase tracking-widest text-accent">RetroPark</p>
+    <h1 class="display mt-3 max-w-4xl text-5xl">
+      Dolphin and a Game Boy core, in the same runtime
+    </h1>
+    <p class="mt-5 max-w-3xl text-lg text-muted">
+      RetroPark loads emulators as <strong class="text-ink">cores</strong> and drives them through
+      a stable flat-C contract. It is to EverythingBox what libretro is to RetroArch: the layer
+      that turns "an emulator" into "a core the host can load, composite, record, rewind and
+      net-sync without knowing what is inside it."
+    </p>
+  </section>
+
+  <section class="rounded-lg border border-accent/40 bg-accent/5 p-6">
+    <h2 class="font-semibold text-ink">Where this actually stands</h2>
+    <p class="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+      RetroPark is a runtime and a set of cores, not an application — there is nothing to
+      download. It is being built as EverythingBox's next-generation emulation runtime, and it is{' '}
+      <strong class="text-ink">not wired into the shipping app yet</strong>. Today's emulation runs
+      on libretro cores and standalone emulators, which is what the{' '}
+      <a class="text-accent underline" href="/emulation">emulation page</a> describes. This page is
+      about the runtime and where it is going.
+    </p>
+  </section>
+
+  <section class="border-t border-edge/60 py-14">
+    <h2 class="text-3xl font-bold">The problem with one model</h2>
+    <p class="mt-4 max-w-3xl leading-relaxed text-muted">
+      libretro has exactly one shape: the host calls <code class="text-accent">retro_run()</code>,
+      the core produces one frame and returns. For a 6502 that is a good fit. For Dolphin or RPCS3
+      it is hopeless — those emulators own their own threads, their own GPU device and their own
+      frame clock, and they cannot be pumped one frame at a time by somebody else's loop.
+    </p>
+    <p class="mt-4 max-w-3xl leading-relaxed text-muted">
+      The usual workaround is to stop treating heavy emulators as cores at all and shell out to
+      them as separate applications — which is exactly what EverythingBox does today for sixteen
+      modern systems. It works, but the host loses everything: no shared overlay, no unified input
+      routing, no host-owned savestates, a second window and a second set of settings.
+    </p>
+    <p class="mt-4 max-w-3xl leading-relaxed text-muted">
+      RetroPark's contract has <strong class="text-ink">two</strong> core models instead, so a Game
+      Boy core and a full PS3 emulator can both be a core without either one pretending to be the
+      other.
+    </p>
+
+    <div class="mt-10 grid gap-6 md:grid-cols-2">
+      {
+        coreModels.map((m) => (
+          <div class="rounded-lg border border-edge bg-surface p-6">
+            <h3 class="text-xl font-bold">{m.name}</h3>
+            <p class="mt-1 text-sm font-medium text-accent">{m.owner}</p>
+            <p class="mt-3 text-sm leading-relaxed text-muted">{m.summary}</p>
+            <ul class="mt-4 space-y-1.5 text-sm text-muted">
+              {
+                m.gains.map((g) => (
+                  <li class="flex gap-2">
+                    <span class="text-accent">→</span>
+                    {g}
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
+      A core declares which it is in its <code class="text-accent">get_info</code>, and the runtime
+      treats it accordingly. Because the driven model keeps the clock in the host, rewind,
+      scrubbing and deterministic netplay come for free for every core that uses it — the core does
+      not implement any of them.
+    </p>
+  </section>
+
+  <section class="border-t border-edge/60 py-14">
+    <h2 class="text-3xl font-bold">Frames cross without a copy</h2>
+    <p class="mt-4 max-w-3xl leading-relaxed text-muted">
+      A presenting core renders on its own GPU device, and the host composites on its own. Pixels
+      cross between them through a ring of shared textures — a D3D11 shared handle guarded by an{' '}
+      <code class="text-accent">IDXGIKeyedMutex</code>, or a Vulkan image with a shared timeline
+      semaphore — carrying a generation counter so a window resize can never hand the host a stale
+      surface. Two devices, and nothing forced to copy on the hot path.
+    </p>
+    <p class="mt-4 max-w-3xl leading-relaxed text-muted">
+      That handoff is the whole reason a full emulator can render inside someone else's window and
+      still have that window draw its own overlay on top.
+    </p>
+  </section>
+
+  <section class="border-t border-edge/60 py-14">
+    <h2 class="text-3xl font-bold">What already runs</h2>
+    <p class="mt-3 mb-8 max-w-3xl text-sm leading-relaxed text-muted">
+      Windows, on both backends. The core ABI is stable at <strong class="text-ink">v{retroparkAbiVersion}</strong>,
+      and a core declaring the wrong version is refused at load. macOS and iOS — Metal, and the
+      static-core path that makes a platform without <code class="text-accent">dlopen</code>{' '}
+      possible — are designed but not yet built.
+    </p>
+
+    <div class="grid gap-8 md:grid-cols-2">
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-widest text-accent">
+          Driven · {driven.length}
+        </h3>
+        <div class="mt-4 space-y-4">
+          {
+            driven.map((c) => (
+              <div class="rounded-lg border border-edge bg-surface p-4">
+                <p class="font-semibold">
+                  {c.name}
+                  <code class="ml-2 text-xs font-normal text-muted">{c.id}</code>
+                </p>
+                <p class="mt-1 text-sm leading-relaxed text-muted">{c.blurb}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-widest text-accent">
+          Presenting · {presenting.length}
+        </h3>
+        <div class="mt-4 space-y-4">
+          {
+            presenting.map((c) => (
+              <div class="rounded-lg border border-edge bg-surface p-4">
+                <p class="font-semibold">
+                  {c.name}
+                  <code class="ml-2 text-xs font-normal text-muted">{c.id}</code>
+                  <span class="ml-2 rounded border border-edge px-1.5 py-0.5 text-[11px] font-normal text-muted">
+                    {c.graphics}
+                  </span>
+                </p>
+                <p class="mt-1 text-sm leading-relaxed text-muted">{c.blurb}</p>
+                {c.external && (
+                  <p class="mt-2 text-xs text-muted">
+                    Built from a working checkout, not vendored — its own licence applies to a
+                    combined binary.
+                  </p>
+                )}
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-edge/60 py-14">
+    <h2 class="text-3xl font-bold">What it means for EverythingBox</h2>
+    <p class="mt-4 max-w-3xl leading-relaxed text-muted">
+      Sixteen of the systems EverythingBox supports currently launch a separate application. Under
+      RetroPark those become cores: rendering inside the app's own window, under the app's overlay,
+      with the app's input routing and its savestates — the same treatment the built-in cores get
+      today. One window, one set of controls, one place your saves live.
+    </p>
+    <p class="mt-4 max-w-3xl leading-relaxed text-muted">
+      The <code class="text-accent">libretro_shim</code> core is why that is not a rewrite of the
+      world: existing libretro cores keep working through it, so the retro half of the library does
+      not need porting to gain the rest.
+    </p>
+  </section>
+
+  <section class="border-t border-edge/60 py-14">
+    <h2 class="text-3xl font-bold">And in your frontend, not just ours</h2>
+    <p class="mt-4 max-w-3xl leading-relaxed text-muted">
+      RetroPark is a runtime with a flat-C API, not an application with a runtime bolted inside
+      it. Two headers are the entire surface: one the host calls, one a core implements. A host
+      creates a runtime for a graphics API, loads a core, loads content, then drives it —{' '}
+      <code class="text-accent">advance</code>, <code class="text-accent">present</code>,{' '}
+      <code class="text-accent">render</code>, <code class="text-accent">set_input</code>,{' '}
+      <code class="text-accent">save_state</code>, <code class="text-accent">rewind</code>.
+    </p>
+    <div class="mt-6 grid gap-6 md:grid-cols-3">
+      <div class="rounded-lg border border-edge bg-surface p-5">
+        <h3 class="font-semibold">It owns no UI</h3>
+        <p class="mt-2 text-sm leading-relaxed text-muted">
+          <code class="text-accent">pause</code>, <code class="text-accent">resume</code>,{' '}
+          <code class="text-accent">reset</code> and <code class="text-accent">get_status</code>{' '}
+          exist so a frontend can build its own hotkeys and in-game menu on top. The runtime never
+          draws a menu of its own.
+        </p>
+      </div>
+      <div class="rounded-lg border border-edge bg-surface p-5">
+        <h3 class="font-semibold">Flat C, so any language</h3>
+        <p class="mt-2 text-sm leading-relaxed text-muted">
+          No C++ ABI to match, no framework to adopt. The ABI is versioned, and a mismatched core
+          is refused at load rather than crashing you later.
+        </p>
+      </div>
+      <div class="rounded-lg border border-edge bg-surface p-5">
+        <h3 class="font-semibold">Static cores too</h3>
+        <p class="mt-2 text-sm leading-relaxed text-muted">
+          A core can be compiled in and loaded by id instead of by <code class="text-accent">dlopen</code>,
+          which is what makes locked-down platforms possible at all. Designed and exercised by the
+          reference core; the mobile backends are still to come.
+        </p>
+      </div>
+    </div>
+    <p class="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
+      It is GPLv3, so a frontend that links it inherits that — worth knowing before you adopt it.
+      The heavy cores pull in their own terms as well: Dolphin is GPLv2-or-later and RPCS3 is
+      GPLv2, and neither is distributed as part of RetroPark.
+    </p>
+  </section>
+
+  <section class="border-t border-edge/60 py-16">
+    <h2 class="text-2xl font-bold">Read the code</h2>
+    <p class="mt-3 max-w-2xl text-muted">
+      RetroPark is public and GPLv3. The two headers are the best place to start — they are the
+      whole contract.
+    </p>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a
+        href={retroparkRepo}
+        rel="noopener"
+        class="rounded-lg bg-accent px-5 py-2.5 font-semibold text-base"
+      >
+        RetroPark on GitHub
+      </a>
+      <a
+        href={discordUrl}
+        rel="noopener"
+        class="rounded-lg border border-edge px-5 py-2.5 font-medium text-muted hover:text-ink"
+      >
+        Ask in #dev-general
+      </a>
+    </div>
+  </section>
+</Base>
