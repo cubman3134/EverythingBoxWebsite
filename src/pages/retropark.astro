@@ -4,6 +4,7 @@ import Glow from '../components/Glow.astro';
 import { discordUrl } from '../data/community';
 import {
   coreModels,
+  integration,
   retroparkAbiVersion,
   retroparkCores,
   retroparkRepo,
@@ -34,12 +35,16 @@ const presenting = retroparkCores.filter((c) => c.model === 'presenting');
   <section class="rounded-lg border border-accent/40 bg-accent/5 p-6">
     <h2 class="font-semibold text-ink">Where this actually stands</h2>
     <p class="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
-      RetroPark is a runtime and a set of cores, not an application — there is nothing to
-      download. It is being built as EverythingBox's next-generation emulation runtime, and it is{' '}
-      <strong class="text-ink">not wired into the shipping app yet</strong>. Today's emulation runs
-      on libretro cores and standalone emulators, which is what the{' '}
-      <a class="text-accent underline" href="/emulation">emulation page</a> describes. This page is
-      about the runtime and where it is going.
+      RetroPark is now <strong class="text-ink">wired into EverythingBox</strong> — a permanent
+      dependency, a backend you can select per game or per system, and its own play surface inside
+      the app. What it is not yet is the thing running your games:{' '}
+      <strong class="text-ink">no ROM goes through it today</strong>. The surface currently drives
+      the reference core, and libretro stays the default for everything until you opt a game in.
+    </p>
+    <p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
+      So the seam is real and the plumbing is live; the payload comes next. Today's emulation still
+      runs on libretro cores and standalone emulators, which is what the{' '}
+      <a class="text-accent underline" href="/emulation">emulation page</a> describes.
     </p>
   </section>
 
@@ -167,17 +172,44 @@ const presenting = retroparkCores.filter((c) => c.model === 'presenting');
   </section>
 
   <section class="border-t border-edge/60 py-14">
-    <h2 class="text-3xl font-bold">What it means for EverythingBox</h2>
+    <h2 class="text-3xl font-bold">Inside EverythingBox</h2>
     <p class="mt-4 max-w-3xl leading-relaxed text-muted">
-      Sixteen of the systems EverythingBox supports currently launch a separate application. Under
-      RetroPark those become cores: rendering inside the app's own window, under the app's overlay,
-      with the app's input routing and its savestates — the same treatment the built-in cores get
+      The integration is deliberately a seam rather than a switch. Every game launch now resolves to
+      a backend — libretro or RetroPark — and you can set that per game, or as a default for a whole
+      system. Un-opted games take the libretro path exactly as before, byte for byte; nothing about
+      today's behaviour changed underneath anyone.
+    </p>
+    <p class="mt-4 max-w-3xl leading-relaxed text-muted">
+      Opt a game in and it launches onto RetroPark's own play surface, a sibling of the libretro one
+      rather than a replacement for it. That surface loads its core <em>statically</em> — compiled
+      in, no <code class="text-accent">dlopen</code> — which is the same path that makes a
+      locked-down platform possible later.
+    </p>
+
+    <div class="mt-8 rounded-lg border border-edge bg-surface p-6">
+      <h3 class="font-semibold">How far along it is</h3>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        {
+          integration.map((step) => (
+            <li class="flex gap-3">
+              <span class={step.done ? 'text-accent' : 'text-muted'}>{step.done ? '✓' : '○'}</span>
+              <span class={step.done ? 'text-muted' : 'text-muted/70'}>{step.text}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <p class="mt-8 max-w-3xl leading-relaxed text-muted">
+      The prize at the end is the sixteen systems that currently launch a separate application.
+      Under a presenting core those become cores: rendering inside the app's own window, under its
+      overlay, with its input routing and its savestates — the same treatment the built-in cores get
       today. One window, one set of controls, one place your saves live.
     </p>
     <p class="mt-4 max-w-3xl leading-relaxed text-muted">
-      The <code class="text-accent">libretro_shim</code> core is why that is not a rewrite of the
-      world: existing libretro cores keep working through it, so the retro half of the library does
-      not need porting to gain the rest.
+      And the <code class="text-accent">libretro_shim</code> core is why getting there is not a
+      rewrite of the world: existing libretro cores keep working through it, so the retro half of
+      the library does not need porting to gain the rest.
     </p>
   </section>
 

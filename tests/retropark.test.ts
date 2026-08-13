@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
-import { coreModels, retroparkAbiVersion, retroparkCores } from '../src/data/retropark';
+import {
+  coreModels,
+  integration,
+  retroparkAbiVersion,
+  retroparkCores,
+} from '../src/data/retropark';
 
 describe('retropark data', () => {
   it('lists every core in the RetroPark tree', () => {
@@ -42,21 +47,35 @@ describe('the retropark page is honest about integration', () => {
     expect(existsSync(page)).toBe(true);
   });
 
-  it('says plainly that it is not in the shipping app yet', () => {
-    // The whole reason this test exists: RetroPark is NOT wired into EverythingBox (a grep
-    // of the app repo finds no reference). If someone later softens this line, the page
-    // starts advertising a feature the download does not have.
+  it('says it IS integrated', () => {
+    // Slice 2a landed in the app repo: permanent submodule dep, EmuBackend seam, per-game and
+    // per-system backend selection, a RetroParkView play surface, and a CI job.
     const html = readFileSync(page, 'utf8');
-    expect(html).toContain('not wired into the shipping app yet');
+    expect(html).toContain('wired into EverythingBox');
   });
 
-  it('never claims today’s builds use it', () => {
+  it('says no ROM goes through it yet', () => {
+    // This is the line that keeps the page honest now. RetroParkView loads the reference
+    // DRIVEN core statically — an animated test pattern. Real ROMs are the next slice
+    // (libretro_shim + fceumm). Softening this advertises a feature that does not exist.
+    const html = readFileSync(page, 'utf8');
+    expect(html).toContain('no ROM goes through it today');
+  });
+
+  it('says libretro is still the default', () => {
+    // EmuBackend.h: until a user opts in, every launch resolves to Libretro and behaves
+    // byte-identically to before.
+    const html = readFileSync(page, 'utf8').toLowerCase();
+    expect(html).toMatch(/libretro stays the default|libretro is still the default/);
+  });
+
+  it('never claims games or heavy emulators already run through it', () => {
     const html = readFileSync(page, 'utf8').toLowerCase();
     for (const claim of [
-      'everythingbox uses retropark',
+      'play your games through retropark',
+      'dolphin now renders inside',
       'powered by retropark',
-      'built on retropark',
-      'runs on retropark',
+      'every game runs through retropark',
     ]) {
       expect(html, `page claims "${claim}"`).not.toContain(claim);
     }
@@ -72,5 +91,19 @@ describe('the retropark page is honest about integration', () => {
     expect(html).toContain('libretro'); // the comparison
     expect(html).toContain('EverythingBox'); // the integration story
     expect(html).toMatch(/your frontend|other frontend/i); // portability to other hosts
+  });
+});
+
+describe('integration checklist', () => {
+  it('marks the five landed steps and the three that have not', () => {
+    expect(integration.filter((s) => s.done)).toHaveLength(5);
+    expect(integration.filter((s) => !s.done)).toHaveLength(3);
+  });
+
+  it('keeps ROMs, presenting cores and mobile on the not-yet side', () => {
+    const pending = integration.filter((s) => !s.done).map((s) => s.text.toLowerCase());
+    expect(pending.some((t) => t.includes('rom'))).toBe(true);
+    expect(pending.some((t) => t.includes('presenting'))).toBe(true);
+    expect(pending.some((t) => t.includes('ios'))).toBe(true);
   });
 });

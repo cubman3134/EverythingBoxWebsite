@@ -7,10 +7,22 @@
  *   - include/retropark/retropark_abi.h — RETROPARK_ABI_VERSION (currently 5)
  *   - cores/ *\/core.json — the core list and each core's type/graphics API
  *
- * IMPORTANT: RetroPark is NOT yet wired into the shipping EverythingBox app — a grep of
- * the app repo finds no reference to it. The page must describe the relationship in the
- * future tense and must not imply today's builds use it. Today's emulation is libretro
- * cores plus standalone emulators; that is what /emulation documents.
+ * INTEGRATION STATUS — this is the part that is easy to overstate.
+ *
+ * RetroPark IS now integrated into EverythingBox (Slice 2a, app repo): a permanent
+ * submodule dependency linked into the app, an `EmuBackend` seam that resolves every
+ * launch to libretro or RetroPark, a per-game override plus per-system/global defaults in
+ * settings, a real `RetroParkView` play surface beside the libretro one, and a CI job that
+ * builds the submodule and runs its probes.
+ *
+ * What it does NOT do yet, and the page must not imply otherwise:
+ *   - No game runs through it. `RetroParkView` loads the reference DRIVEN core as a static
+ *     core — an animated test pattern, no ROM. Real ROMs are Slice 2b (libretro_shim +
+ *     fceumm).
+ *   - No presenting cores in-window. Dolphin and RPCS3 still launch as separate
+ *     applications from EverythingBox; the shared-texture path is not wired into the app.
+ *   - libretro remains the default. Per EmuBackend.h: until a user opts a game or system
+ *     in, every launch resolves to Libretro and behaves byte-identically to before.
  */
 
 export const retroparkRepo = 'https://github.com/cubman3134/RetroPark';
@@ -116,4 +128,27 @@ export const coreModels: CoreModel[] = [
       'Emulators that own their threads',
     ],
   },
+];
+
+/** One step of the EverythingBox integration, and whether it has landed. */
+export interface IntegrationStep {
+  text: string;
+  done: boolean;
+}
+
+/**
+ * Traceable to the app repo: the Slice 2a commits (a2e416c permanent dependency, 3562c54
+ * EmuBackend + resolveBackend, f750d24 RetroParkView, 2c93d58 backend picker, 5d83ae0 CI)
+ * and to docs/superpowers/specs/2026-08-12-retropark-backend-beside-libretro-design.md
+ * for what is explicitly out of scope so far.
+ */
+export const integration: IntegrationStep[] = [
+  { text: 'A permanent dependency — RetroPark is a submodule, built and linked into the app', done: true },
+  { text: 'A backend seam: every launch resolves to libretro or RetroPark', done: true },
+  { text: 'Pick the backend per game, or set a default per system', done: true },
+  { text: 'A RetroPark play surface in the app, beside the libretro one', done: true },
+  { text: 'Continuous integration builds the runtime and runs its probes', done: true },
+  { text: 'Real ROMs through RetroPark, via the libretro shim', done: false },
+  { text: 'Presenting cores in-window — Dolphin and RPCS3 under the app’s own overlay', done: false },
+  { text: 'macOS and iOS, via Metal and the static-core path', done: false },
 ];
